@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://morethanmin.com
+Host: https://prodevopsguytech.com
 
 # Sitemaps
-Sitemap: https://morethanmin.com/sitemap.xml
+Sitemap: https://prodevopsguytech.com/sitemap.xml

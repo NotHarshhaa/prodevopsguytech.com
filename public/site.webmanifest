@@ -15,7 +15,7 @@
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
-  "name": "morethanmin",
-  "short_name": "mtm",
-  "description": "💻 🎨 🎮 ⚡️"
+  "name": "ProDevOpsGuy Tech",
+  "short_name": "prodevopsguy",
+  "description": "DevOps/Cloud Tech Community"
 }

@@ -27,7 +27,7 @@ const Home: NextPage<{ posts: TPost[] }> = ({ posts }) => {
       <NextSeo
         title={`${CONFIG.BLOG_TITLE}`}
         canonical={router.asPath}
-        description={`welcome to morethanmin's blog!`}
+        description={`welcome to prodevopsguy's blog!`}
         openGraph={{
           title: `${CONFIG.BLOG_TITLE}`,
           description,

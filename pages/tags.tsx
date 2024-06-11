@@ -52,10 +52,10 @@ const Tags: NextPage<{ tags: TTags }> = ({ tags }) => {
       <NextSeo
         title={`Tags | ${CONFIG.BLOG_TITLE}`}
         canonical={router.asPath}
-        description={`tags in morethanmin's blog`}
+        description={`tags in prodevopsguy's blog`}
         openGraph={{
           title: `${CONFIG.BLOG_TITLE}`,
-          description: `tags in morethanmin's blog`,
+          description: `tags in prodevopsguy's blog`,
           locale: router.locale,
           type: 'website',
           url: `${router.asPath}`,

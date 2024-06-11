@@ -26,10 +26,10 @@ const Archive: NextPage<{ posts: TPost[] }> = ({ posts }) => {
       <NextSeo
         title={`Archive | ${CONFIG.BLOG_TITLE}`}
         canonical={router.asPath}
-        description={`archive in morethanmin's blog`}
+        description={`archive in prodevopsguy's blog`}
         openGraph={{
           title: `${CONFIG.BLOG_TITLE}`,
-          description: `archive in morethanmin's blog`,
+          description: `archive in prodevopsguy's blog`,
           locale,
           type: 'website',
           url: `${router.asPath}`,

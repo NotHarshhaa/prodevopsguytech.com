@@ -62,10 +62,10 @@ const Cates: NextPage<{ categories: TCategories }> = ({ categories }) => {
       <NextSeo
         title={`Categories | ${CONFIG.BLOG_TITLE}`}
         canonical={router.asPath}
-        description={`categories in morethanmin's blog`}
+        description={`categories in prodevopsguy's blog`}
         openGraph={{
           title: `${CONFIG.BLOG_TITLE}`,
-          description: `categories in morethanmin's blog`,
+          description: `categories in prodevopsguy's blog`,
           locale: router.locale,
           type: 'website',
           url: `${router.asPath}`,

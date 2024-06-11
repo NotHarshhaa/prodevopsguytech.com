@@ -28,18 +28,11 @@ const navigations = [
     width: 'group-hover:w-21.5',
   },
   {
-    name: 'Friends',
-    link: '/friends',
-    icon: <FriendsIcon />,
-    color: Colors['blue'].text.normal,
-    width: 'group-hover:w-15.5',
-  },
-  {
-    name: 'Me',
+    name: 'About',
     link: '/me',
     icon: <MeIcon />,
     color: Colors['red'].text.normal,
-    width: 'group-hover:w-6.5',
+    width: 'group-hover:w-15.5',
   },
 ]
 

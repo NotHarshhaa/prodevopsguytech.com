@@ -28,7 +28,7 @@ module.exports = withPWA(
     async redirects() {
       return [
         {
-          source: '/:path((?!me|tags|friends|archive|categories)[^/]+)',
+          source: '/:path((?!me|tags|archive|categories)[^/]+)',
           destination: '/posts/:path*',
           permanent: true,
         },

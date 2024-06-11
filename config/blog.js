@@ -1,11 +1,11 @@
 const CONFIG = {
-  BLOG_TITLE: 'morethanmin',
-  link: 'https://morethanmin.com',
+  BLOG_TITLE: 'ProDevOpsGuy Tech Community',
+  link: 'https://prodevopsguytech.com',
   NOTION_PAGE_ID: '',
   UTTERANCES: {
     ENABLE: true,
     CONFIG: {
-      repo: 'morethanmin/morethanmin.com',
+      repo: 'NotHarshhaa/prodevopsguytech.com',
       'issue-term': 'og:title',
       label: '💬 Utterances',
     },

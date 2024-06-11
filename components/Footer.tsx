@@ -45,7 +45,7 @@ const Footer = () => {
                   src="/static/images/portrait.png"
                   width={18}
                   height={18}
-                  alt="morethanmin"
+                  alt="prodevopsguytech"
                 />
               </a>
             </Link>
@@ -97,21 +97,11 @@ const Footer = () => {
                   </a>
                 </p>
               </div>
-              <p className="flex flex-col items-end">
-                <a
-                  className="hover:underline"
-                  href="https://morethan-log.vercel.app"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Old Blog
-                </a>
-              </p>
             </div>
             <div className="text-xs flex justify-between">
               <div>
                 <span>
-                  {`Copyright © 2020-${thisYear} `}
+                  {`Copyright © 2023-${thisYear} `}
                   <Link href={'/me'}>
                     <a
                       className="text-true-gray-600 hover:underline"
