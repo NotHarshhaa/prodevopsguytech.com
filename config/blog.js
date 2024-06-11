@@ -1,6 +1,6 @@
 const CONFIG = {
   BLOG_TITLE: 'ProDevOpsGuy Tech Community',
-  link: 'https://prodevopsguytech.com',
+  link: 'https://prodevopsguy.tech',
   NOTION_PAGE_ID: '',
   UTTERANCES: {
     ENABLE: true,

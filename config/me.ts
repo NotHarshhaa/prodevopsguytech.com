@@ -5,7 +5,7 @@ import {
 import { SiKubernetes, SiDocker, SiGithub, SiAnsible, SiTerraform, SiJenkins, SiAmazonaws, SiMicrosoftazure, SiAzuredevops } from 'react-icons/si';
 
 export const me = {
-  site: 'https://www.prodevopsguytech.com',
+  site: 'https://www.prodevopsguy.tech',
   name: 'ProDevOpsGuy Tech',
   image: '/static/images/portrait.png',
   email: 'mailto:prodevopsguytech@gmail.com',
