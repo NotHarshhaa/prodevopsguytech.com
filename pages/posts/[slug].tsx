@@ -160,11 +160,17 @@ export const getStaticPaths = async () => {
     posts = await getPosts()
   } catch (error) {
     console.error('Error fetching posts:', error)
+    return { paths: [], fallback: 'blocking' }
   }
 
+  const paths = posts
+    .map((p) => p?.slug)
+    .filter((slug): slug is string => typeof slug === 'string' && slug.trim() !== '')
+    .map((slug) => ({ params: { slug } }))
+
   return {
-    paths: posts.map((p) => ({ params: { slug: p.slug } })),
-    fallback: 'blocking',
+    paths,
+    fallback: 'blocking', // Allows dynamic rendering if slug isn't found
   }
 }
 
