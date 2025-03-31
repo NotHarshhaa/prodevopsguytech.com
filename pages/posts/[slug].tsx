@@ -41,19 +41,9 @@ const PostPage: NextPage<{
   recordMap: ExtendedRecordMap
   pagination: any
 }> = ({ post, recordMap, pagination, posts }) => {
-  const { text } = readingTime(
-    Object.values(recordMap.block)
-      .map((b) => b?.value?.properties?.title?.flat())
-      .flat()
-      .join('')
-  )
-
   const router = useRouter()
   const { locale } = router
 
-  // TODO: https://github.com/NotionX/react-notion-x#supported-blocks
-
-  // setToc(blocks)
   if (!post || !recordMap) {
     return (
       <>
@@ -65,38 +55,37 @@ const PostPage: NextPage<{
     )
   }
 
+  const { text } = readingTime(
+    Object.values(recordMap.block || {})
+      .map((b) => b?.value?.properties?.title?.flat() || '')
+      .flat()
+      .join('')
+  )
+
   return (
     <>
       <PostSeo
         date={new Date(post.date.start_date)}
         description={post.summary || ''}
-        // TODO: check if this is correct
         image={post.thumbnail || ''}
         locale={locale || ''}
         title={post.title}
         url={router.asPath}
       />
       <ContentLayout>
-        <header
-          className="flex flex-col text-justify break-word"
-          data-aos="fade-down"
-        >
+        <header className="flex flex-col text-justify break-word">
           <div className="mt-3 md:mt-6">
-            <Link
-              href="/category/[{Category}]"
-              as={`/category/${post.category?.[0]}`}
-            >
-              <a>
+            {post.category?.[0] && (
+              <Link href={`/category/${post.category[0]}`}>
                 <p
-                  className={`inline-block mb-2 text-xs font-bold text-true-gray-600 leading-2 ${
-                    Colors[getColorClassByName(post.category?.[0] || '')].text
-                      .normal
+                  className={`inline-block mb-2 text-xs font-bold text-true-gray-600 ${
+                    Colors[getColorClassByName(post.category[0])]?.text?.normal
                   } `}
                 >
-                  {post.category?.[0]}
+                  {post.category[0]}
                 </p>
-              </a>
-            </Link>
+              </Link>
+            )}
             <div className="flex flex-row items-center mt-2 space-x-2 text-sm font-semibold text-true-gray-600 dark:text-true-gray-400">
               <Moment date={post.date} fromNow format="yyyy.MM.DD" local />
               <p>·</p>
@@ -110,29 +99,17 @@ const PostPage: NextPage<{
               </p>
             </div>
           </div>
-          <p
-            className={`my-6 text-4xl font-bold whitespace-pre-wrap lg:text-5xl ${
-              // post.colorTitle ? `${Colors[post.category.color]?.bg.gradient} bg-gradient-to-r text-transparent bg-clip-text` : '' // TODO: default 를 category 에 따라 색상 변경
-              ''
-            } relative z-0`}
-          >
+          <p className="my-6 text-4xl font-bold whitespace-pre-wrap lg:text-5xl">
             {post.title}
           </p>
-          <p
-            className="mb-4 text-xl font-medium text-true-gray-600 lg:text-2xl"
-            dark="text-true-gray-400"
-          >
+          <p className="mb-4 text-xl font-medium text-true-gray-600 lg:text-2xl">
             {post.summary}
           </p>
           <Share />
         </header>
       </ContentLayout>
       <CoverLayout>
-        <div
-          className="relative w-full h-full md:rounded-3xl"
-          data-aos="fade-up"
-          data-aos-duration="500"
-        >
+        <div className="relative w-full h-full md:rounded-3xl">
           <ThemedImage
             className="z-0 overflow-hidden transition-all duration-500 ease-in-out md:rounded-3xl"
             post={post}
@@ -140,45 +117,24 @@ const PostPage: NextPage<{
         </div>
       </CoverLayout>
       <ContentLayout>
-        {/* <FrontMessage post={page} /> */}
-        {/* {blocks.map((block) => {
-          return <Fragment key={block.id}>{renderNotionBlock(block)}</Fragment>
-        })} */}
         <ContentRenderer recordMap={recordMap} />
-        <div
-          className={`flex flex-col mt-8 justify-between ${
-            post.thumbnail ? 'md:flex-row md:items-center' : ''
-          } gap-4 w-full`}
-        >
-          {/* Tags */}
+        <div className="flex flex-col mt-8 gap-4 w-full">
           <div className="flex flex-wrap items-center gap-2 overflow-scroll scrollbar-hide">
             <TagsIcon />
-            {post.tags?.map((tagName: any) => (
-              <Link
-                href={`/tags/${tagName}`}
-                as={`/tags/${tagName}`}
-                key={tagName}
-              >
-                <a href={`/tags/${tagName}`}>
-                  <div
-                    className={`${
-                      Colors[getColorClassByName(tagName)].bg.msg
-                    } bg-gradient-to-bl from-white/20 text-white flex items-center text-xs py-1 px-2  rounded-full whitespace-nowrap`}
-                    dark="bg-gradient-to-br to-black/10"
-                  >
-                    {tagName}
-                  </div>
-                </a>
+            {post.tags?.map((tagName: string) => (
+              <Link href={`/tags/${tagName}`} key={tagName}>
+                <div
+                  className={`${
+                    Colors[getColorClassByName(tagName)]?.bg?.msg
+                  } bg-gradient-to-bl from-white/20 text-white flex items-center text-xs py-1 px-2  rounded-full whitespace-nowrap`}
+                >
+                  {tagName}
+                </div>
               </Link>
             ))}
           </div>
         </div>
-        {/* <Licensing page={page} data-aos="fade-up" data-aos-duration="500" /> */}
-        <Pagination
-          pagination={pagination}
-          data-aos="fade-up"
-          data-aos-duration="500"
-        ></Pagination>
+        <Pagination pagination={pagination} />
       </ContentLayout>
       <ContentLayout>
         <div className="hidden grid-cols-2 gap-4 sm:grid md:grid-cols-2">
@@ -198,11 +154,16 @@ const PostPage: NextPage<{
 }
 
 export const getStaticPaths = async () => {
-  const posts = await getPosts()
-  const filteredPosts = filterPosts(posts)
+  let posts: TPost[] = []
+
+  try {
+    posts = await getPosts()
+  } catch (error) {
+    console.error('Error fetching posts:', error)
+  }
 
   return {
-    paths: filteredPosts.map((p: any) => ({ params: { slug: p.slug } })),
+    paths: posts.map((p) => ({ params: { slug: p.slug } })),
     fallback: 'blocking',
   }
 }
@@ -214,53 +175,40 @@ interface Props extends ParsedUrlQuery {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { slug } = params as Props
 
-  const posts = await getPosts()
-  const filteredPosts = filterPosts(posts)
+  let posts: TPost[] = []
+  let recordMap: ExtendedRecordMap | null = null
+  let post: TPost | null = null
 
-  const pageIndex = filteredPosts.findIndex((p) => p.slug === slug)
-  const post = filteredPosts[pageIndex]
-  const prev = filteredPosts[pageIndex - 1] || null
-  const next = filteredPosts[pageIndex + 1] || null
+  try {
+    posts = await getPosts()
+    const filteredPosts = filterPosts(posts)
+    post = filteredPosts.find((p) => p.slug === slug) || null
 
-  if (!post?.id) {
+    if (post?.id) {
+      recordMap = await getPostBlocks(post.id)
+    }
+  } catch (error) {
+    console.error(`Error fetching post details for slug: ${slug}`, error)
+  }
+
+  if (!post || !recordMap) {
     return {
-      props: {},
-      redirect: {
-        destination: '/',
-      },
+      notFound: true,
     }
   }
-  const recordMap = await getPostBlocks(post.id)
 
-  // TODO: blur
-  /*
-  if (prev) {
-    prev?.thumbnail.blur = (
-      await getPlaiceholder(prev?.thumbnail, {
-        size: 10,
-      })
-    ).base64
-  }
-
-  if (next) {
-    next?.thumbnail.blur = (
-      await getPlaiceholder(next?.thumbnail, {
-        size: 10,
-      })
-    ).base64
-  }
-  */
-
-  const pagination: any = {
-    prev: pageIndex - 1 >= 0 ? prev : null,
-    next: pageIndex + 1 < filteredPosts.length ? next : null,
+  const pageIndex = posts.findIndex((p) => p.slug === slug)
+  const pagination = {
+    prev: pageIndex > 0 ? posts[pageIndex - 1] : null,
+    next: pageIndex < posts.length - 1 ? posts[pageIndex + 1] : null,
   }
 
   return {
-    props: { posts: filteredPosts, post, pagination, recordMap },
-    revalidate: 60 * 60,
+    props: { posts, post, pagination, recordMap },
+    revalidate: 3600,
   }
 }
+
 ;(PostPage as NextPageWithLayout).getLayout = function getLayout(
   page: ReactElement
 ) {

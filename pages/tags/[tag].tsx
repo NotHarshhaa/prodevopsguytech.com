@@ -16,15 +16,16 @@ const TagPage: NextPage<{
 }> = ({ posts, tag }) => {
   const router = useRouter()
   const { locale } = router
+
   return (
     <>
       <NextSeo
         title={`${tag.name} | ${CONFIG.BLOG_TITLE}`}
         canonical={router.asPath}
-        description={`${tag.name} in morethanmin's blog`}
+        description={`${tag.name} in prodevopsguy's blog`}
         openGraph={{
           title: `${CONFIG.BLOG_TITLE}`,
-          description: `${tag.name} in morethanmin's blog`,
+          description: `${tag.name} in prodevopsguy's blog`,
           locale,
           type: 'website',
           url: `${router.asPath}`,
@@ -41,13 +42,19 @@ const TagPage: NextPage<{
 }
 
 export const getStaticPaths = async () => {
-  const posts = await getPosts()
-  const filteredPosts = filterPosts(posts)
-  const tags = getAllSelectItemsFromPosts('tags', filteredPosts)
+  let tags: Record<string, number> = {}
+
+  try {
+    const allPosts = await getPosts()
+    const filteredPosts = filterPosts(allPosts)
+    tags = getAllSelectItemsFromPosts('tags', filteredPosts)
+  } catch (error) {
+    console.error('Error fetching tags:', error)
+  }
 
   return {
-    paths: Object.keys(tags).map((p: any) => ({ params: { tag: p } })),
-    fallback: 'blocking',
+    paths: Object.keys(tags).map((tag) => ({ params: { tag } })),
+    fallback: 'blocking', // Load dynamically if missing
   }
 }
 
@@ -58,43 +65,31 @@ interface Props extends ParsedUrlQuery {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { tag } = params as Props
 
-  const posts = await getPosts()
-  const filteredPosts = filterPosts(posts)
-  const tags = getAllSelectItemsFromPosts('tags', filteredPosts)
+  let posts: TPost[] = []
+  let tags: Record<string, number> = {}
 
-  const tagFilteredPosts = filteredPosts.filter(
-    (post) => (post.tags ?? []).filter((tagName) => tagName === tag).length > 0
-  )
+  try {
+    const allPosts = await getPosts()
+    const filteredPosts = filterPosts(allPosts)
+    tags = getAllSelectItemsFromPosts('tags', filteredPosts)
 
-  // TODO: blur
-  /*
-  for (let post of filteredPosts) {
-    if (post) {
-      try {
-        post.cover.blurLight = (
-          await getPlaiceholder(post.cover.light, {
-            size: 10,
-          })
-        ).base64
-        post.cover.blurDark = (
-          await getPlaiceholder(post.cover.dark, {
-            size: 10,
-          })
-        ).base64
-      } catch (e) {
-        post.cover.blurLight = ''
-        post.cover.blurDark = ''
-      }
+    posts = filteredPosts.filter((post) => (post.tags ?? []).includes(tag))
+  } catch (error) {
+    console.error(`Error fetching posts for tag ${tag}:`, error)
+  }
+
+  if (!tags[tag]) {
+    return {
+      notFound: true, // Avoids build errors when tag is missing
     }
   }
-  */
 
   return {
     props: {
-      posts: tagFilteredPosts,
-      tag: { name: tag, count: tags[tag] },
+      posts,
+      tag: { name: tag, count: tags[tag] || 0 },
     },
-    revalidate: 60 * 60,
+    revalidate: 3600, // Revalidate every 1 hour
   }
 }
 
